@@ -42,7 +42,7 @@ void LEDControl::begin()
 {
 	byte i;
 
-	for ( i = 0; i < DeviceCount; i++)
+	for (i = 0; i < DeviceCount; i++)
 	{
 		SendCmdToDisplay(i, Display_Test_Mode, No_Test_Mode);
 		SendCmdToDisplay(i, Decode_Mode, No_Decode);
@@ -55,10 +55,14 @@ void LEDControl::begin()
 	{
 		DisplayBuffer[i] = 0;
 	}
+
+	refresh();
 }
 
-void LEDControl::setDim(byte Dim)
+void LEDControl::setDim(int Dim)
 {
+	if (Dim < 0 || Dim >15) return;
+
 	for (int i = 0; i < DeviceCount; i++)
 	{
 		SendCmdToDisplay(i, Intensity_Mode, Dim);
@@ -75,6 +79,11 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 
 	byte StringLength = Segments.length() - 1;
 
+	if ((cmdValue % 100) == 99)
+	{
+		setDim(Segments.toInt());
+	}
+
 	// String should not more then 8 digit per MAX.
 	if (StringLength > 8) return;
 
@@ -87,7 +96,8 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 	// Input string length should not exceed total digits sum by all MAX.
 	if (((addr - 1) * 8 + (posStart - 1) + StringLength) > (8 * DeviceCount)) return;
 
-	
+
+
 	char CharString[8];
 	Segments.toCharArray(CharString, StringLength + 1);
 
@@ -108,9 +118,9 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 	*/
 
 	byte CharStringIndex = 0;
-	
+
 	byte dpos = ((addr - 1) * 8 + (posStart - 1));
-	
+
 	for (int i = 0;i < StringLength;i++)
 	{
 		//Serial.print("CmdInput::CharStringIndex=");
@@ -125,10 +135,10 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 				setDP(dpos + i, 1);
 
 				// Skip one char for '.'
-				CharStringIndex++; 
+				CharStringIndex++;
 
 				// Shorten StringLength as Digit+DP = 1 char.
-				StringLength--;	
+				StringLength--;
 			}
 			else
 				setDP(dpos + i, 0);
@@ -140,15 +150,14 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 
 	
 	Serial.println("BufferStatus ALL:");
-	for (int j = 0;j <64;j++)
+	for (int j = 0;j < 64;j++)
 	{
 		Serial.print(j, DEC);
 		Serial.print(" - ");
-
-			Serial.println(DisplayBuffer[j], BIN);
+		Serial.println(DisplayBuffer[j], BIN);
 	}
-	
 
+	refresh();
 
 }
 
@@ -172,7 +181,7 @@ void LEDControl::setDigit(int pos, byte digit)
 	DisplayBuffer[pos] = CharToSegments(digit);
 
 	//setDP(pos, DPStatus);
-	
+
 	/*
 	Serial.print("BufferStatus(DG)=");
 	Serial.println(DisplayBuffer[pos], BIN);
@@ -190,12 +199,12 @@ void LEDControl::setDP(byte pos, byte isOn)
 	*/
 
 	//Need to update Display Buffer
-	
-	byte DPStatus = 1<<7;
+
+	byte DPStatus = 1 << 7;
 
 
 	if (isOn == 1)
-		DisplayBuffer[pos] |= DPStatus ;
+		DisplayBuffer[pos] |= DPStatus;
 	else
 		DisplayBuffer[pos] &= (~(DPStatus));
 
@@ -214,10 +223,12 @@ void LEDControl::refresh()
 	for (Digit = 0; Digit < 8; Digit++) // Loop 8 times for every digit position
 	{
 		digitalWrite(pinCS, LOW);
-		// Send to all Maxims, 0 last! (all Maxims receive command for DIGIT n
+		// Send to all Maxims, 0 last! (all Maxims receive command for DIGIT n)
 		for (Maxim = DeviceCount; Maxim > 0; Maxim--)
 		{
-			SPI.transfer(Digit + 1);              // Adres
+					
+			//SPI.transfer(Digit + 1);              // Address, standard match with Max Pin.
+			SPI.transfer(8 - Digit);              // Address, Backward match with Left hand order 0.
 			SPI.transfer(DisplayBuffer[((Maxim - 1) * 8) + Digit]); // Data
 		}
 		delay(2);

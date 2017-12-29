@@ -50,18 +50,22 @@ public:
 	void SendCmdToDisplay(byte ChipNumber, int Addr, byte Data);
 
 	void refresh();
+	void begin();
+
 
 	void CmdInput(int cmdValue, String Segments);
-	void begin();
-	void setDim(byte Dim);
+	
+	void setDim(int Dim);
+
+	void setFlash(byte pos);
+	void doFlash();
 
 
 private:
 	byte CharToSegments(byte CharIn);
 	void setDP(byte pos, byte isOn);
 	void setDigit(int pos, byte digit);
-public:
-	void setFlash(byte pos);
-	void doFlash();
+
+	
 };
 

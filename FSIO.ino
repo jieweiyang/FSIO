@@ -20,9 +20,13 @@ LEDControl SegDisplay(pinDigiSegment);
 void setup()
 {
 	Serial.begin(115200);
-	Serial.println("Setup Completed");
+	
 	delay(2000);
 	LEDAnnunciator.begin();
+	SegDisplay.begin();
+	SegDisplay.setDim(8);
+
+	Serial.println("Setup Completed");
 	
 }
 
