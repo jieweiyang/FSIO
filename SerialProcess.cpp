@@ -1,23 +1,18 @@
 #include "SerialProcess.h"
 #include <Arduino.h>
 
-
-
 SerialOut::SerialOut()
 {
 }
-
 
 SerialOut::~SerialOut()
 {
 }
 
-
 void SerialOut::SendCommand()
 {
 	Serial.println(CommandToSend + String("=") + ValueToSend);
 }
-
 
 SerialIn::SerialIn()
 {
@@ -26,7 +21,6 @@ SerialIn::SerialIn()
 	InputBuffer = new char[InputBufferSize];
 
 }
-
 
 SerialIn::~SerialIn()
 {
@@ -121,13 +115,10 @@ void SerialIn::Reset()
 	isCmdValueUpdated = false;
 }
 
-
-
 bool SerialIn::GetIsCmdRecCompleted()
 {
 	return isCmdRecCompleted;
 }
-
 
 bool SerialIn::GetIsCmdValueUpdated()
 {

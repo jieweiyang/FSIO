@@ -34,7 +34,6 @@ void setup()
 void loop()
 {
 
-	
 	if (Serial.available() > 0) {
 		CommandIn.AddChar(Serial.read());
 
@@ -75,6 +74,8 @@ void loop()
 
 		CommandIn.Reset();
 	}
+
+	SegDisplay.doFlash();
 	
 
 }

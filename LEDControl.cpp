@@ -54,6 +54,7 @@ void LEDControl::begin()
 	for (i = 0; i < 64; i++)
 	{
 		DisplayBuffer[i] = 0;
+		FlashBuffer[i] = 0;
 	}
 
 	refresh();
@@ -69,6 +70,12 @@ void LEDControl::setDim(int Dim)
 	}
 }
 
+void LEDControl::setFlashInterval(int interval)
+{
+	FlashInterval = interval;
+}
+
+
 void LEDControl::CmdInput(int cmdValue, String Segments)
 {
 	//cmdValue = 9xx
@@ -79,10 +86,24 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 
 	byte StringLength = Segments.length() - 1;
 
-	if ((cmdValue % 100) == 99)
+	if ((cmdValue % 100) == 99)  // 99 to be dim
 	{
 		setDim(Segments.toInt());
 	}
+
+
+	if ((cmdValue % 100) == 91)  // 91 to be flash on
+	{
+		setFlash(Segments.toInt()-1,1);
+	}
+
+	if ((cmdValue % 100) == 90)  // 90 to be flash off
+	{
+		setFlash(Segments.toInt()-1, 0);
+	}
+
+
+
 
 	// String should not more then 8 digit per MAX.
 	if (StringLength > 8) return;
@@ -148,7 +169,7 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 		//if (i == StringLength-1) setDP(dpos + i, 0);
 	}
 
-	
+
 	Serial.println("BufferStatus ALL:");
 	for (int j = 0;j < 64;j++)
 	{
@@ -178,7 +199,12 @@ void LEDControl::setDigit(int pos, byte digit)
 
 	//byte DPStatus = DisplayBuffer[pos] >> 8;
 
+	if (FlashBuffer[pos] == DisplayBuffer[pos] && DisplayBuffer[pos] !=0)
+		FlashBuffer[pos] = CharToSegments(digit);
+
 	DisplayBuffer[pos] = CharToSegments(digit);
+
+	
 
 	//setDP(pos, DPStatus);
 
@@ -226,7 +252,7 @@ void LEDControl::refresh()
 		// Send to all Maxims, 0 last! (all Maxims receive command for DIGIT n)
 		for (Maxim = DeviceCount; Maxim > 0; Maxim--)
 		{
-					
+
 			//SPI.transfer(Digit + 1);              // Address, standard match with Max Pin.
 			SPI.transfer(8 - Digit);              // Address, Backward match with Left hand order 0.
 			SPI.transfer(DisplayBuffer[((Maxim - 1) * 8) + Digit]); // Data
@@ -248,11 +274,41 @@ byte LEDControl::CharToSegments(byte CharIn)
 }
 
 
-void LEDControl::setFlash(byte pos)
+void LEDControl::setFlash(byte pos, byte isOn)
 {
+	if (isOn == 1)
+		FlashBuffer[pos] = DisplayBuffer[pos];
+	else
+	{
+		DisplayBuffer[pos] = FlashBuffer[pos];
+		FlashBuffer[pos] = 0;
+	}
+
 }
 
 
 void LEDControl::doFlash()
 {
+
+	if ((millis() - FlashMillis) > FlashInterval)
+	{
+		FlashMillis = millis();
+		for (int i = 0; i < 64; i++)
+		{
+			if (FlashBuffer[i] != 0)
+			{
+				if (DisplayBuffer[i] == FlashBuffer[i])
+					DisplayBuffer[i] = 0;
+				else
+					DisplayBuffer[i] = FlashBuffer[i];
+			}
+
+		}
+
+		refresh();
+		
+	}
+
 }
+
+
