@@ -38,7 +38,7 @@ const byte CharTable[20] = { 48   ,49   ,50 ,  51  , 52  , 53   ,54   ,55 ,  56 
 class LEDControl
 {
 public:
-	LEDControl(int csPin);
+	LEDControl();
 	~LEDControl();
 
 private:
@@ -62,7 +62,7 @@ public:
 	void SendCmdToDisplay(byte ChipNumber, int Addr, byte Data);
 
 	void refresh();
-	void begin();
+	void begin(int csPin);
 
 	void CmdInput(int cmdValue, String Segments);
 

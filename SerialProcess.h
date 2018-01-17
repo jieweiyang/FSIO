@@ -9,6 +9,8 @@ public:
 	String CommandToSend;
 	String ValueToSend;
 	void SendCommand();
+
+	void SendCommand(int Command, int Value);
 };
 
 class SerialIn
@@ -20,6 +22,8 @@ public:
 	void Update();
 	void Reset();
 
+	bool GetIsCmdRecCompleted();
+	bool GetIsCmdValueUpdated();
 
 	//void Initial();
 
@@ -28,6 +32,8 @@ public:
 	int varValueInt = 0;
 	String varValueString;
 	int varLength = 0;
+
+
 
 		
 private:
@@ -43,8 +49,7 @@ private:
 	boolean isCmdRecCompleted = false;
 	boolean isCmdValueUpdated = false;
 	
-public:
-	bool GetIsCmdRecCompleted();
-	bool GetIsCmdValueUpdated();
+
+
 };
 

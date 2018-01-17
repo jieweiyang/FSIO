@@ -14,6 +14,12 @@ void SerialOut::SendCommand()
 	Serial.println(CommandToSend + String("=") + ValueToSend);
 }
 
+void SerialOut::SendCommand(int Command, int Value)
+{
+	Serial.println(Command + String("=") + Value);
+}
+
+
 SerialIn::SerialIn()
 {
 	ndx = 0;
@@ -124,3 +130,5 @@ bool SerialIn::GetIsCmdValueUpdated()
 {
 	return isCmdValueUpdated;
 }
+
+

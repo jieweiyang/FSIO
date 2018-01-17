@@ -4,12 +4,9 @@
 
 
 
-LEDControl::LEDControl(int csPin)
+LEDControl::LEDControl()
 {
-	SPI.begin();
-	pinCS = csPin;
-	pinMode(pinCS, OUTPUT);
-	digitalWrite(pinCS, HIGH);
+	
 }
 
 LEDControl::~LEDControl()
@@ -38,8 +35,14 @@ void LEDControl::SendCmdToDisplay(byte ChipNumber, int Addr, byte Data)
 
 }
 
-void LEDControl::begin()
+void LEDControl::begin(int csPin)
 {
+
+	SPI.begin();
+	pinCS = csPin;
+	pinMode(pinCS, OUTPUT);
+	digitalWrite(pinCS, HIGH);
+
 	byte i;
 
 	for (i = 0; i < DeviceCount; i++)
