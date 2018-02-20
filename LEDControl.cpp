@@ -173,6 +173,7 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 	}
 
 
+	/*
 	Serial.println("BufferStatus ALL:");
 	for (int j = 0;j < 64;j++)
 	{
@@ -180,6 +181,7 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 		Serial.print(" - ");
 		Serial.println(DisplayBuffer[j], BIN);
 	}
+	*/
 
 	refresh();
 

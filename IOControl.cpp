@@ -115,8 +115,6 @@ Switch165::~Switch165()
 }
 
 
-
-
 void Switch165::begin(int csPin)
 {
 	SPI.begin();
@@ -292,7 +290,7 @@ void Encoder165::updateDB()
 
 				if (((now ^ pre) & 0X03) != 0) // Did one of the pin change
 				{
-					if (now == 0 && pre < 3 && pre > 0 )       // Yes, is it middle (AB) position ?
+					if (now == 0 && pre < 3 && pre > 0)       // Yes, is it middle (AB) position ?
 						encoderState[((i * 8) + j) / 2] = pre;
 				} // End If - Encoder Changed
 

@@ -59,12 +59,18 @@ private:
 
 
 public:
+	// Input Command process
+	// *99 = Set Dim
+	// *91 = Set Flash On
+	// *90 = Set Flash Off
+	void CmdInput(int cmdValue, String Segments);
+
 	void SendCmdToDisplay(byte ChipNumber, int Addr, byte Data);
 
 	void refresh();
 	void begin(int csPin);
 
-	void CmdInput(int cmdValue, String Segments);
+	
 
 	void setDim(int Dim);
 

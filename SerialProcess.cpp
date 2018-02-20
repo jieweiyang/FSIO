@@ -38,7 +38,7 @@ void SerialIn::AddChar(char ReadChar)
 	ndx++;
 
 	if (ReadChar == '\n') {
-		isCmdRecCompleted = true;
+		FlagCmdRecCompleted = true;
 
 	}
 
@@ -104,7 +104,7 @@ void SerialIn::Update()
 	varLength = varIndex - 1;
 
 	if (CmdValue > 0) {
-		isCmdValueUpdated = true;
+		FlagCmdValueUpdated = true;
 	}
 	else {
 		Reset();
@@ -117,18 +117,18 @@ void SerialIn::Update()
 void SerialIn::Reset()
 {
 	ndx = 0;
-	isCmdRecCompleted = false;
-	isCmdValueUpdated = false;
+	FlagCmdRecCompleted = false;
+	FlagCmdValueUpdated = false;
 }
 
-bool SerialIn::GetIsCmdRecCompleted()
+bool SerialIn::IsCmdRecCompleted()
 {
-	return isCmdRecCompleted;
+	return FlagCmdRecCompleted;
 }
 
-bool SerialIn::GetIsCmdValueUpdated()
+bool SerialIn::IsCmdValueUpdated()
 {
-	return isCmdValueUpdated;
+	return FlagCmdValueUpdated;
 }
 
 

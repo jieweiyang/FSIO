@@ -12,11 +12,17 @@
 
 SerialOut CommandOut;
 SerialIn CommandIn;
+
 OnOff595 LEDAnnunciator;
 LEDControl SegDisplay;
 Switch165 ToggleSwitch;
 Encoder165 EncoderSwitch;
 
+//Prepare to transfer to dynamic object create, using Pointer. Test Purpose
+OnOff595 *PtLEDAnnunciator;
+LEDControl *PtSegDisplay;
+Switch165 *PtToggleSwitch;
+Encoder165 *PtEncoderSwitch;
 
 
 void checkToggle(Switch165 TargetSwitch)
@@ -66,10 +72,20 @@ void checkEncoder(Encoder165 TargetEncoder)
 
 void setup()
 {
+	
+	//Using Pointer to initial object, Test purpose
+	PtEncoderSwitch = new Encoder165;
+
+	// End 
+
 	Serial.begin(115200);
 
 	delay(500);
 
+	//User pointer initial
+	PtEncoderSwitch->begin(11);
+
+	//Normal initial
 	LEDAnnunciator.begin(pinLEDAnnunciator);
 	
 	SegDisplay.begin(pinDigiSegment);
@@ -88,16 +104,18 @@ void setup()
 void loop()
 {
 
-	if (Serial.available() > 0) {
+	if (Serial.available() > 0) 
+	{
 		CommandIn.AddChar(Serial.read());
 
-		if (CommandIn.GetIsCmdRecCompleted())
+		if (CommandIn.IsCmdRecCompleted())
 			CommandIn.Update();
 
 	}
 
-	if (CommandIn.GetIsCmdValueUpdated())
+	if (CommandIn.IsCmdValueUpdated())
 	{
+		/*
 		Serial.println();
 		Serial.println("===FSIO===");
 		Serial.print("CommandValue:");
@@ -108,11 +126,14 @@ void loop()
 
 		Serial.print("VarValue(String):");
 		Serial.println(CommandIn.varValueString);
+		*/
 
 		int CmdType = CommandIn.CmdValue / 100;
 
+		/*
 		Serial.print("CommandType:");
 		Serial.println(CmdType);
+		*/
 
 		switch (CmdType)
 		{

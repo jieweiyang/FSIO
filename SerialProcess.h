@@ -22,8 +22,8 @@ public:
 	void Update();
 	void Reset();
 
-	bool GetIsCmdRecCompleted();
-	bool GetIsCmdValueUpdated();
+	bool IsCmdRecCompleted();
+	bool IsCmdValueUpdated();
 
 	//void Initial();
 
@@ -46,8 +46,8 @@ private:
 	
 	//char Vbuffer[32];
 
-	boolean isCmdRecCompleted = false;
-	boolean isCmdValueUpdated = false;
+	boolean FlagCmdRecCompleted = false;
+	boolean FlagCmdValueUpdated = false;
 	
 
 
