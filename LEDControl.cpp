@@ -6,7 +6,7 @@
 
 LEDControl::LEDControl()
 {
-	
+
 }
 
 LEDControl::~LEDControl()
@@ -97,12 +97,12 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 
 	if ((cmdValue % 100) == 91)  // 91 to be flash on
 	{
-		setFlash(Segments.toInt()-1,1);
+		setFlash(Segments.toInt() - 1, 1);
 	}
 
 	if ((cmdValue % 100) == 90)  // 90 to be flash off
 	{
-		setFlash(Segments.toInt()-1, 0);
+		setFlash(Segments.toInt() - 1, 0);
 	}
 
 
@@ -146,11 +146,12 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 	byte dpos = ((addr - 1) * 8 + (posStart - 1));
 
 	for (int i = 0;i < StringLength;i++)
+		//for (int i = StringLength;i >=0;i)
 	{
 		//Serial.print("CmdInput::CharStringIndex=");
 		//Serial.println(CharStringIndex);
 
-		setDigit(dpos + i, CharString[CharStringIndex]);
+		setDigit(dpos - i, CharString[CharStringIndex]);
 
 		if (StringLength - i > 1) // must be two chars with DP.
 		{
@@ -204,12 +205,12 @@ void LEDControl::setDigit(int pos, byte digit)
 
 	//byte DPStatus = DisplayBuffer[pos] >> 8;
 
-	if (FlashBuffer[pos] == DisplayBuffer[pos] && DisplayBuffer[pos] !=0)
+	if (FlashBuffer[pos] == DisplayBuffer[pos] && DisplayBuffer[pos] != 0)
 		FlashBuffer[pos] = CharToSegments(digit);
 
 	DisplayBuffer[pos] = CharToSegments(digit);
 
-	
+
 
 	//setDP(pos, DPStatus);
 
@@ -311,7 +312,7 @@ void LEDControl::doFlash()
 		}
 
 		refresh();
-		
+
 	}
 
 }

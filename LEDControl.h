@@ -1,6 +1,20 @@
 #pragma once
 #include <Arduino.h>
 
+/*
+
+Command format:
+	Start with Pin
+	usual format:
+	[pin][ic][digig]
+
+	Special command:
+	99 - Dim,  range from 0 - 15
+	91 - Flash On
+	90 - Flash Off
+
+*/
+
 /*Define modes as per max7219.pdf*/
 
 #define Decode_Mode         0x09
@@ -49,7 +63,7 @@ private:
 	byte FlashBuffer[64];
 
 	int FlashInterval = 700;
-	unsigned long FlashMillis=0;
+	unsigned long FlashMillis = 0;
 
 
 	byte CharToSegments(byte CharIn);
@@ -59,10 +73,7 @@ private:
 
 
 public:
-	// Input Command process
-	// *99 = Set Dim
-	// *91 = Set Flash On
-	// *90 = Set Flash Off
+
 	void CmdInput(int cmdValue, String Segments);
 
 	void SendCmdToDisplay(byte ChipNumber, int Addr, byte Data);
@@ -70,7 +81,7 @@ public:
 	void refresh();
 	void begin(int csPin);
 
-	
+
 
 	void setDim(int Dim);
 

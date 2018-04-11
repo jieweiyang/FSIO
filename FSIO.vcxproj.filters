@@ -30,6 +30,9 @@
     <ClInclude Include="LEDControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="setup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SerialProcess.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LEDControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="setup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

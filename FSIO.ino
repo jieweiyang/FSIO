@@ -1,7 +1,10 @@
+#include <SPI.h>
+#include <eeprom.h>
+
 #include "SerialProcess.h"
 #include "IOControl.h"
 #include "LEDControl.h"
-#include <SPI.h>
+//#include "setup.h"
 
 
 #define pinLEDAnnunciator 6
@@ -13,35 +16,34 @@
 SerialOut CommandOut;
 SerialIn CommandIn;
 
-OnOff595 LEDAnnunciator;
-LEDControl SegDisplay;
-Switch165 ToggleSwitch;
-Encoder165 EncoderSwitch;
+OnOff595 *LEDAnnunciator;
+LEDControl *SegDisplay;
+Switch165 *ToggleSwitch;
+Encoder165 *EncoderSwitch;
 
-//Prepare to transfer to dynamic object create, using Pointer. Test Purpose
-OnOff595 *PtLEDAnnunciator;
-LEDControl *PtSegDisplay;
-Switch165 *PtToggleSwitch;
-Encoder165 *PtEncoderSwitch;
+//OnOff595 *PtOnOff[7] = { 0,0,0,0,0,0,0 };
+//LEDControl *PtSeg[7] = { 0,0,0,0,0,0,0 };
+//Switch165 *PtToggle[7] = { 0,0,0,0,0,0,0 };
+//Encoder165 *PtEncoder[7] = { 0,0,0,0,0,0,0 };
 
 
-void checkToggle(Switch165 TargetSwitch)
+void checkToggle(Switch165 *TargetSwitch)
 {
 
 	byte BitMask = 1;
-	for (int i = 0; i < TargetSwitch.DeviceCount; i++) {
+	for (int i = 0; i < TargetSwitch->DeviceCount; i++) {
 		BitMask = 1;
-		if (TargetSwitch.chgMask[i] != 0)
+		if (TargetSwitch->chgMask[i] != 0)
 		{
 			for (int j = 0; j < 8; j++)   // Check for bit's that changed
 			{
 
-				if ((TargetSwitch.chgMask[i] & BitMask) != 0)         // did this bit change?
+				if ((TargetSwitch->chgMask[i] & BitMask) != 0)         // did this bit change?
 				{
-					if ((TargetSwitch.curInState[i] & BitMask) == 0)
-						CommandOut.SendCommand((i * 8) + j + TargetSwitch.getCSPin() * 100, 1);
+					if ((TargetSwitch->curInState[i] & BitMask) == 0)
+						CommandOut.SendCommand((i * 8) + j + TargetSwitch->getCSPin() * 100, 1);
 					else
-						CommandOut.SendCommand((i * 8) + j + TargetSwitch.getCSPin() * 100, 0);
+						CommandOut.SendCommand((i * 8) + j + TargetSwitch->getCSPin() * 100, 0);
 				}
 
 				BitMask = BitMask << 1;
@@ -51,16 +53,16 @@ void checkToggle(Switch165 TargetSwitch)
 
 }
 
-void checkEncoder(Encoder165 TargetEncoder)
+void checkEncoder(Encoder165 *TargetEncoder)
 {
-	for (int i = 0; i < TargetEncoder.NumberOfEncoder; i++)
+	for (int i = 0; i < TargetEncoder->NumberOfEncoder; i++)
 	{
 
-		if (TargetEncoder.encoderState[i] != 0)
+		if (TargetEncoder->encoderState[i] != 0)
 		{
-			CommandOut.SendCommand(i + TargetEncoder.getCSPin() * 100, TargetEncoder.encoderState[i]);
+			CommandOut.SendCommand(i + TargetEncoder->getCSPin() * 100, TargetEncoder->encoderState[i]);
 
-			CommandOut.SendCommand(i + TargetEncoder.getCSPin() * 100, 0);
+			CommandOut.SendCommand(i + TargetEncoder->getCSPin() * 100, 0);
 		}
 
 
@@ -69,12 +71,13 @@ void checkEncoder(Encoder165 TargetEncoder)
 }
 
 
-
 void setup()
 {
 	
-	//Using Pointer to initial object, Test purpose
-	PtEncoderSwitch = new Encoder165;
+	LEDAnnunciator = new OnOff595;
+	SegDisplay = new LEDControl;
+	ToggleSwitch = new Switch165;
+	EncoderSwitch = new Encoder165;
 
 	// End 
 
@@ -82,18 +85,16 @@ void setup()
 
 	delay(500);
 
-	//User pointer initial
-	PtEncoderSwitch->begin(11);
 
 	//Normal initial
-	LEDAnnunciator.begin(pinLEDAnnunciator);
+	LEDAnnunciator->begin(pinLEDAnnunciator);
 	
-	SegDisplay.begin(pinDigiSegment);
-	SegDisplay.setDim(8);
+	SegDisplay->begin(pinDigiSegment);
+	SegDisplay->setDim(8);
 
-	ToggleSwitch.begin(pinInputToggleSwitch);
+	ToggleSwitch->begin(pinInputToggleSwitch);
 
-	EncoderSwitch.begin(pinInputENcoder);
+	EncoderSwitch->begin(pinInputENcoder);
 
 
 	Serial.println("Setup Completed");
@@ -139,11 +140,11 @@ void loop()
 		{
 
 		case pinLEDAnnunciator:
-			LEDAnnunciator.setLed(CommandIn.CmdValue, CommandIn.varValueInt);
+			LEDAnnunciator->setLed(CommandIn.CmdValue, CommandIn.varValueInt);
 			break;
 
 		case pinDigiSegment:
-			SegDisplay.CmdInput(CommandIn.CmdValue, CommandIn.varValueString);
+			SegDisplay->CmdInput(CommandIn.CmdValue, CommandIn.varValueString);
 			break;
 
 		}
@@ -151,16 +152,12 @@ void loop()
 		CommandIn.Reset();
 	}
 
-	SegDisplay.doFlash();
-
-
-	ToggleSwitch.updateDB();
+	SegDisplay->doFlash();
+	
+	ToggleSwitch->updateDB();
 	checkToggle(ToggleSwitch);
 
-
-	EncoderSwitch.updateDB();
+	EncoderSwitch->updateDB();
 	checkEncoder(EncoderSwitch);
-
-
 
 }
