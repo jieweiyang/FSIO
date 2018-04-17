@@ -49,7 +49,7 @@ void LEDControl::begin(int csPin)
 	{
 		SendCmdToDisplay(i, Display_Test_Mode, No_Test_Mode);
 		SendCmdToDisplay(i, Decode_Mode, No_Decode);
-		SendCmdToDisplay(i, Intensity_Mode, 1);
+		SendCmdToDisplay(i, Intensity_Mode, 0);
 		SendCmdToDisplay(i, Scan_Limit_Mode, All_Groups_On);
 		SendCmdToDisplay(i, Shut_Down_Mode, Not_Shut_Down);
 	}
@@ -157,7 +157,7 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 		{
 			if ((CharString[CharStringIndex + 1]) == '.')
 			{
-				setDP(dpos + i, 1);
+				setDP(dpos - i, 1);
 
 				// Skip one char for '.'
 				CharStringIndex++;
@@ -166,7 +166,7 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 				StringLength--;
 			}
 			else
-				setDP(dpos + i, 0);
+				setDP(dpos - i, 0);
 		}
 		CharStringIndex++;
 

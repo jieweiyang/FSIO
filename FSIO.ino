@@ -83,14 +83,14 @@ void setup()
 
 	Serial.begin(115200);
 
-	delay(500);
+	delay(200);
 
 
 	//Normal initial
 	LEDAnnunciator->begin(pinLEDAnnunciator);
 	
 	SegDisplay->begin(pinDigiSegment);
-	SegDisplay->setDim(8);
+	SegDisplay->setDim(0);
 
 	ToggleSwitch->begin(pinInputToggleSwitch);
 
