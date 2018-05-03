@@ -125,31 +125,12 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 	char CharString[8];
 	Segments.toCharArray(CharString, StringLength + 1);
 
-	/*
-	Serial.println("===LED::CmdInput===");
-
-	Serial.print("Address:");
-	Serial.println(addr);
-
-	Serial.print("StartPos:");
-	Serial.println(posStart, DEC);
-
-	Serial.print("StringLength:");
-	Serial.println(StringLength, DEC);
-
-	Serial.print("String:");
-	Serial.println(String(CharString));
-	*/
-
 	byte CharStringIndex = 0;
 
 	byte dpos = ((addr - 1) * 8 + (posStart - 1));
 
 	for (int i = 0;i < StringLength;i++)
-		//for (int i = StringLength;i >=0;i)
 	{
-		//Serial.print("CmdInput::CharStringIndex=");
-		//Serial.println(CharStringIndex);
 
 		setDigit(dpos - i, CharString[CharStringIndex]);
 
@@ -170,19 +151,8 @@ void LEDControl::CmdInput(int cmdValue, String Segments)
 		}
 		CharStringIndex++;
 
-		//if (i == StringLength-1) setDP(dpos + i, 0);
 	}
 
-
-	/*
-	Serial.println("BufferStatus ALL:");
-	for (int j = 0;j < 64;j++)
-	{
-		Serial.print(j, DEC);
-		Serial.print(" - ");
-		Serial.println(DisplayBuffer[j], BIN);
-	}
-	*/
 
 	refresh();
 
@@ -222,13 +192,7 @@ void LEDControl::setDigit(int pos, byte digit)
 
 void LEDControl::setDP(byte pos, byte isOn)
 {
-	/*
-	Serial.println("===LED::SetDP===");
-	Serial.print("Pos(0 Based):");
-	Serial.print(pos, DEC);
-	Serial.print("=");
-	Serial.println(isOn, DEC);
-	*/
+
 
 	//Need to update Display Buffer
 
@@ -239,13 +203,6 @@ void LEDControl::setDP(byte pos, byte isOn)
 		DisplayBuffer[pos] |= DPStatus;
 	else
 		DisplayBuffer[pos] &= (~(DPStatus));
-
-	/*
-	Serial.print("BufferStatus(DP)=");
-	Serial.println(DisplayBuffer[pos], BIN);
-	*/
-
-
 
 }
 

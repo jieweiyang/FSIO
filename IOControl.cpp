@@ -13,22 +13,6 @@ OnOff595::~OnOff595()
 {
 }
 
-void OnOff595::setLed(int addr, int pos, int isOn)
-{
-
-	if (addr<0 || addr >(DeviceCount - 1))
-		return;
-	if (pos < 0 || pos >7)
-		return;
-
-	if (isOn == 1)
-		LedStatus[addr] |= bitLedCol[pos];
-	else
-		LedStatus[addr] &= ~(bitLedCol[pos]);
-
-	refresh();
-}
-
 void OnOff595::setLed(int cmd, int isOn)
 {
 	byte addr = ((cmd % 100) / 10);

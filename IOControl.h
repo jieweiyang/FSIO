@@ -19,21 +19,22 @@ public:
 	OnOff595();
 	~OnOff595();
 
+	void begin(int csPin);
 
 	/*
 	Set LED status
-	addr - number of chips
-	pos - pin on chip
+	cmd - 3 digits from host
 	isOn - 1 to light up.
 	*/
-	void setLed(int addr, int pos, int isOn);
 
 	void setLed(int cmd, int isOn);
 
+	// Update settings to register buffer.
 	void refresh();
 
+	// Set all pin on for test all.
 	void testAll();
-	void begin(int csPin);
+	
 };
 
 
@@ -48,9 +49,7 @@ public:
 	byte DeviceCount = 8;
 	byte curInState[8];
 	byte chgMask[8];
-
-
-
+	
 	void begin(int csPin);
 	int getCSPin();
 	void updateDB();

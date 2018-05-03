@@ -7,25 +7,27 @@
 //#include "setup.h"
 
 
+// Define the CS Pin peripheral device.
 #define pinLEDAnnunciator 6
 #define pinInputToggleSwitch 7
 #define pinInputENcoder 8
 #define pinDigiSegment 9
 
 
+
+
+// Create Serial control object.
 SerialOut CommandOut;
 SerialIn CommandIn;
 
+// Create peripheral device pointer.
 OnOff595 *LEDAnnunciator;
 LEDControl *SegDisplay;
 Switch165 *ToggleSwitch;
 Encoder165 *EncoderSwitch;
 
-//OnOff595 *PtOnOff[7] = { 0,0,0,0,0,0,0 };
-//LEDControl *PtSeg[7] = { 0,0,0,0,0,0,0 };
-//Switch165 *PtToggle[7] = { 0,0,0,0,0,0,0 };
-//Encoder165 *PtEncoder[7] = { 0,0,0,0,0,0,0 };
 
+// Check toggle and Encoder changes and send command to host.
 
 void checkToggle(Switch165 *TargetSwitch)
 {
@@ -74,6 +76,7 @@ void checkEncoder(Encoder165 *TargetEncoder)
 void setup()
 {
 	
+	// Define peripheral pointer to new object.
 	LEDAnnunciator = new OnOff595;
 	SegDisplay = new LEDControl;
 	ToggleSwitch = new Switch165;
@@ -86,7 +89,8 @@ void setup()
 	delay(200);
 
 
-	//Normal initial
+	//Peripheral object initial
+
 	LEDAnnunciator->begin(pinLEDAnnunciator);
 	
 	SegDisplay->begin(pinDigiSegment);
@@ -116,25 +120,10 @@ void loop()
 
 	if (CommandIn.IsCmdValueUpdated())
 	{
-		/*
-		Serial.println();
-		Serial.println("===FSIO===");
-		Serial.print("CommandValue:");
-		Serial.println(CommandIn.CmdValue);
-
-		Serial.print("VarValue(int):");
-		Serial.println(CommandIn.varValueInt);
-
-		Serial.print("VarValue(String):");
-		Serial.println(CommandIn.varValueString);
-		*/
-
+		
+		// From input command,  3 digits,  get first digit to identify which peripheral device.
 		int CmdType = CommandIn.CmdValue / 100;
 
-		/*
-		Serial.print("CommandType:");
-		Serial.println(CmdType);
-		*/
 
 		switch (CmdType)
 		{
@@ -154,6 +143,8 @@ void loop()
 
 	SegDisplay->doFlash();
 	
+	// Check input device.
+
 	ToggleSwitch->updateDB();
 	checkToggle(ToggleSwitch);
 

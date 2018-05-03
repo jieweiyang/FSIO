@@ -39,7 +39,6 @@ void SerialIn::AddChar(char ReadChar)
 
 	if (ReadChar == '\n') {
 		FlagCmdRecCompleted = true;
-
 	}
 
 	if (ndx > InputBufferSize) ndx = InputBufferSize;
@@ -78,7 +77,7 @@ void SerialIn::Update()
 
 	CmdValue = atoi(varName);
 	
-	InputBufferIndex++; // Skip the '='
+	InputBufferIndex++; // Skip the '='\
 	varIndex = 0;
 
 	do
